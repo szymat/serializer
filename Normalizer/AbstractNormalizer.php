@@ -427,7 +427,11 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
             }
 
             if ($constructor->isConstructor()) {
-                return $reflectionClass->newInstanceArgs($params);
+                try {
+                    return $reflectionClass->newInstanceArgs($params);
+                } catch (\TypeError $exception) {
+                    return $reflectionClass->newInstanceWithoutConstructor();
+                }
             } else {
                 return $constructor->invokeArgs(null, $params);
             }
